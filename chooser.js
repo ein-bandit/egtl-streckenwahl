@@ -14,7 +14,7 @@ var round = -1;
 
 for (var i = 0; i < track_length; i++) {
     tracks.push({
-        img: 'tracks/track-' + (i + 1) + '.png',
+        img: 'assets/tracks/track-' + (i + 1) + '.png',
         id: 'track-' + i
     });
     availableTrackIndices.push(i);
