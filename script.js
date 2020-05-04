@@ -20,17 +20,7 @@ for (var i = 0; i < track_length; i++) {
 	});
 	availableTrackIndices.push(i);
 
-	var previewWrap = document.createElement('div');
-	previewWrap.classList = 'preview-track preview-track-'+i;
-
-	var preview = document.createElement('img');
-	preview.id ='preview-'+i;
-	preview.src = tracks[i].img;
-
-	previewWrap.appendChild(preview);
-	document.getElementById('all-tracks').appendChild(previewWrap);
-
-	var wrap = document.createElement('div');
+		var wrap = document.createElement('div');
 	wrap.classList = 'track-wrap track-wrap-'+i;
 
 	var img = document.createElement('img');
@@ -47,23 +37,7 @@ for (var t = 0; t < 6; t++) {
 	$('#track-area').clone().attr('id', 'track-area-'+t).addClass('track-area').appendTo('.track-areas');
 }
 
-var prevIndex = -1;
-$('.preview-track').click(function(elem) {
-
-	if (round > -1) {
-		return;
-	}
-
-	if (prevIndex === $(elem.target).index()) {
-		$('#track-area .track-wrap-'+prevIndex).removeClass('show');
-		prevIndex = -1;
-	} else {
-		console.log($(elem.target).index());
-		prevIndex = $(elem.target).index();
-		unHighlightAll();
-		$('#track-area .track-wrap-'+prevIndex).addClass('show');		
-	}
-});
+$('.track-areas-display').css('display','none');
 
 var running;
 document.getElementById('choose-btn').addEventListener('click', function() {

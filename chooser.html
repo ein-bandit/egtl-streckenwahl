@@ -1,0 +1,130 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>EGTL Track Chooser</title>
+  <meta name="description" content="EGTL Track Chooser">
+  <meta name="author" content="ein-bandit">
+
+  <style>
+
+  	body {
+  		margin: 0;
+  		background: black;
+  	}
+
+  	.choose-btn-wrapper {
+  		position: absolute;
+  		bottom: 0;
+	    left: 50%;
+    	margin-right: -50%;
+    	transform: translate(-50%, -50%);
+  	}
+
+  	#all-container {
+  		position: relative;
+	    height: 100vh;
+  	}
+  	#bg-img {
+  		width: 100%;
+  		opacity: .6;
+  	}
+  	.track-areas-display {
+  		position: absolute;
+	    top: 50%;
+	    left: 50%;
+	    margin-right: -50%;
+	    transform: translate(-50%, -50%);
+	}
+  	.track-areas {
+  		display: flex;
+	    align-items: center;
+	    width: 66%;
+	    flex-wrap: wrap;
+	    margin: 0 auto;
+  	}
+
+  	.track-area {   
+  		position: relative;
+	    width: 200px;
+	    /*height: 262px;*/
+        flex: 1 0 25%;
+        margin: 10px;
+
+        border: 3px solid red;
+    	border-radius: 5%;
+    	min-height: 303.5px;
+	}
+
+	.track-wrap {
+		display: none;
+		width: 100%;
+		border: 3px solid red;
+    	border-radius: 5%;
+    	    overflow: hidden;
+	}
+	.track-wrap-dummy {
+		display: none;
+		background: yellow;
+	}
+
+	img.track-image {
+		width: 100%;
+		vertical-align: middle;
+	}
+
+	.track-wrap-highlight {
+		z-index: -1;
+		background: yellow;
+		padding: 20px;
+		position: absolute;
+		height: 100%;
+	}
+	.track-wrap-highlight.highlighted {
+		display: block;
+	    margin-left: -20px;
+   		margin-top: -20px;
+	}
+
+	.track-wrap.show {
+		display:block;
+		z-index: 1;	    
+	}
+	.track-wrap.highlighted {
+		background: lightgreen;
+    	border: 1px solid transparent;
+    	border-radius: 5px;
+	}
+
+	.track-area-wrapper {
+		padding: 20px;
+		padding-top: 35px;
+	}
+
+  </style>
+
+</head>
+
+<body>
+	<div id="all-container"> 
+			<div class="track-area-wrapper">
+			<div class="track-areas-display">
+				<div id="track-area" class="track-area">
+					<div class="track-wrap track-wrap-highlight"></div>
+				</div>
+			</div>
+			<div class="track-areas">
+			</div>
+		</div>
+
+	</div>
+	<div class="choose-btn-wrapper">
+		<button id="choose-btn">Choose</button>
+	</div>
+
+<script src="node_modules/jquery/dist/jquery.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
