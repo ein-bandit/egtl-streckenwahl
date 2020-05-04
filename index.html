@@ -1,58 +1,58 @@
 <!doctype html>
 
 <html lang="en">
+
 <head>
-  <meta charset="utf-8">
+    <meta charset="utf-8">
 
-  <title>EGTL Track Chooser</title>
-  <meta name="description" content="EGTL Track Chooser">
-  <meta name="author" content="ein-bandit">
+    <title>EGTL Track Chooser</title>
+    <meta name="description" content="EGTL Track Chooser">
+    <meta name="author" content="ein-bandit">
 
-  <style>
+    <style>
+        body {
+            margin: 0;
+            background: black;
+        }
 
-  	body {
-  		margin: 0;
-  		background: black;
-  	}
-  	video {
-  		width: 100%;
-  		height: 100%;
-  		position: absolute;
-  	}
+        video {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+        }
 
-  	#streckenwahl {
-  		display: none;
-  	}
-  	
-
-  </style>
+        #streckenwahl {
+            display: none;
+        }
+    </style>
 
 </head>
 
 <body>
-	<div id="video-container"> 
-		<video id="logo" src="videos/egtl-logo.mp4" loop="true"></video>
-		<video id="streckenwahl" src="videos/egtl-streckenwahl.mp4"></video>
-	</div>
+    <div id="video-container">
+        <video id="logo" src="videos/egtl-logo.mp4" loop="true"></video>
+        <video id="streckenwahl" src="videos/egtl-streckenwahl.mp4"></video>
+    </div>
 
-	<script src="node_modules/jquery/dist/jquery.js"></script>
-  	<script>  			
-  		//load videos here
-  		$('#logo').click(function() {
-  			$('#logo').css('display', 'none');
-  			$('#streckenwahl').css('display', 'block');
-  			var sw = document.getElementById('streckenwahl');
-  			sw.play();
-  			
-  			$('#streckenwahl').on('ended', function(){
-			    $(this).fadeOut('2000', function(){
-			    	$('a').css('opacity', 1);
-			    	setTimeout(function() {
-			    		window.location='overview.html';
-			    	}, 1000);
-		   	});
-  });
-  		});
-  	</script>
+    <script src="node_modules/jquery/dist/jquery.js"></script>
+    <script>
+        //load videos here
+        $('#logo').click(function() {
+            $('#logo').css('display', 'none');
+            $('#streckenwahl').css('display', 'block');
+            var sw = document.getElementById('streckenwahl');
+            sw.play();
+
+            $('#streckenwahl').on('ended', function() {
+                $(this).fadeOut('2000', function() {
+                    $('a').css('opacity', 1);
+                    setTimeout(function() {
+                        window.location = 'overview.html';
+                    }, 1000);
+                });
+            });
+        });
+    </script>
 </body>
+
 </html>
