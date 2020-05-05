@@ -61,6 +61,8 @@
     <script>
         //load videos here
         $('#logo').click(function() {
+
+            $('p').fadeOut(500);
             $('#logo').css('display', 'none');
             $('#streckenwahl').css('display', 'block');
 
@@ -78,9 +80,9 @@
         });
 
         $('.next').click(function() {
-            setTimeout(function() {
+            $('#video-container').fadeOut(500, function() {
                 window.location = 'overview.html';
-            }, 500);
+            })
         });
     </script>
 </body>

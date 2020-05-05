@@ -35,6 +35,7 @@ for (var i = 0; i < track_length; i++) {
 for (var t = 0; t < 6; t++) {
     $('#track-area').clone().attr('id', 'track-area-' + t).addClass('track-area').appendTo('.track-areas');
     $('#track-area-' + t).children('p').text('R' + (t + 1));
+    $('#track-area-' + t + ' .choose-btn-wrapper').css('background-image', 'url(assets/dice-' + (t + 1) + '.svg)');
 }
 
 $('.track-areas-display').css('display', 'none');
@@ -43,55 +44,64 @@ $('.track-areas-display').css('display', 'none');
 $('#track-area-0 .choose-btn-wrapper').addClass('show');
 
 var running;
-$('.choose-btn-wrapper > button').click(function() {
-
-    $('#track-area').css('display', 'none');
-
-    round = chosenTracks.length;
-
-    $('#track-area-' + round + ' .choose-btn-wrapper').removeClass('show');
-
-    $('.track-wrap-highlight').removeClass('highlighted');
-    $('#track-area-' + round + ' .track-wrap').removeClass('show');
-
-    //get random trackIndex
-    var selectTrack = Math.floor(Math.random() * Math.floor(availableTrackIndices.length - 1));
-    chosenTracks.push(selectTrack);
-    console.log("selecting image", selectTrack + 1, 'index:', selectTrack);
+$('.choose-btn-wrapper').click(function() {
 
     if (running) {
         console.error("already choosing");
         return;
     }
 
+
+    round = chosenTracks.length;
     running = true;
+
+    $('#track-area').css('display', 'none');
+
+    $('#track-area-' + round + ' .choose-btn-wrapper').removeClass('show');
+
+    $('.track-wrap-highlight').removeClass('highlighted');
+    $('#track-area-' + round + ' .track-wrap').removeClass('show');
+
+
+
+    //get random trackIndex
+    var selectTrack = Math.floor(Math.random() * Math.floor(availableTrackIndices.length - 1));
+    chosenTracks.push(selectTrack);
+    console.log("selecting image", selectTrack + 1, 'index:', selectTrack);
+
+    availableTrackIndices.splice(availableTrackIndices[selectTrack], 1);
+
+
     //highlightImage(selectTrack);
 
-    highlightSequence(0, (2 * tracks.length) + selectTrack + 1, highlightStartDelay);
-
     //start this code when selection / highlighting is finished.
-    availableTrackIndices.splice(availableTrackIndices[selectTrack], 1);
-    running = false;
 
-    $('#track-area-' + (round + 1) + ' .choose-btn-wrapper').addClass('show');
+    promise = new Promise(function(resolve) {
+        $('#track-area-' + round + ' p').addClass('chosen');
+        highlightSequence(0, (2 * tracks.length) + selectTrack + 1, highlightStartDelay, resolve);
+    });
 
+    promise.then(function() {
+        running = false;
+        $('#track-area-' + (round + 1) + ' .choose-btn-wrapper').addClass('show');
+        console.log('available:', availableTrackIndices);
+        console.log('chosen:', chosenTracks);
+    });
 
-    console.log('available:', availableTrackIndices);
-    console.log('chosen:', chosenTracks);
 });
 
 
 
 function doubleHighlight(index, waitUnhighlight, waitReHighlight) {
-    $('#track-area-' + round + ' .track-wrap-highlight').addClass('highlighted');
+    $('#track-area-' + round).addClass('highlighted');
 
     setTimeout(function() {
-        $('#track-area-' + round + ' .track-wrap-highlight').removeClass('highlighted');
+        $('#track-area-' + round).removeClass('highlighted');
         setTimeout(function() {
             console.log('track-wrap-', index);
-            $('#track-area-' + round + ' .track-wrap-highlight').addClass('highlighted');
+            $('#track-area-' + round).addClass('highlighted');
             setTimeout(function() {
-                $('#track-area-' + round + ' .track-wrap-highlight').removeClass('highlighted');
+                $('#track-area-' + round).removeClass('highlighted');
             }, waitReHighlight || 500);
         }, waitReHighlight || 500);
     }, waitUnhighlight || 500);
@@ -99,7 +109,7 @@ function doubleHighlight(index, waitUnhighlight, waitReHighlight) {
 
 function highlightImage(index) {
     unHighlightAll();
-    console.log("highlighting", '#track-area-' + round + ' .track-wrap-' + index);
+    //console.log("highlighting", '#track-area-' + round + ' .track-wrap-' + index);
     $('#track-area-' + round + ' .track-wrap-' + index).addClass('show');
 }
 
@@ -118,10 +128,12 @@ function disableSelectedTrackDelayed(index, delay) {
     }, delay || 1000);
 }
 
-function highlightSequence(runner, max, delay) {
+function highlightSequence(runner, max, delay, resolve) {
+
     if (runner === max) {
         console.log("trigger double highlight");
         doubleHighlight(runner % tracks.length);
+        resolve();
         return;
     }
     highlightImage(runner % tracks.length);
@@ -129,7 +141,14 @@ function highlightSequence(runner, max, delay) {
     //start next sequence
     setTimeout(function() {
         highlightSequence(runner + 1, max,
-            delay < highlightThreshold ? delay + highlightAddMS : delay);
+            delay < highlightThreshold ? delay + highlightAddMS : delay, resolve);
     }, delay);
 
+}
+
+//initial visibility of page elements
+setTimeout(toggleVisibility, 500);
+
+function toggleVisibility() {
+    $('#top-left-image, #top-right-image, .track-area').toggleClass('initial-display');
 }

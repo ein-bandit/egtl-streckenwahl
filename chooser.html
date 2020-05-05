@@ -17,10 +17,6 @@
             background: black;
         }
 
-        #top-right-image {
-            background-image: url('assets/streckenwahl.png');
-        }
-
         .choose-btn-wrapper {
             position: absolute;
             bottom: 0;
@@ -28,11 +24,27 @@
             margin-right: -50%;
             transform: translate(-50%, -50%);
 
-            display: none;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .5s ease;
+
+            width: 60px;
+            height: 60px;
+
+            transition: bottom .25s ease;
+
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .choose-btn-wrapper:hover {
+            background-size: cover;
+            bottom: 10px;
         }
 
         .choose-btn-wrapper.show {
-            display: block;
+            opacity: 1;
+            pointer-events: all;
         }
 
         #all-container {
@@ -64,13 +76,22 @@
         .track-area {
             position: relative;
             width: 200px;
-            /*height: 262px;*/
+            height: 276px;
             flex: 1 0 25%;
             margin: 10px;
 
             border: 3px solid red;
             border-radius: 5%;
-            min-height: 303.5px;
+
+            overflow: hidden;
+        }
+
+        .track-area.highlighted {
+            border-color: yellow;
+        }
+
+        .track-area.highlighted p.chosen {
+            color: yellow;
         }
 
         .track-area p {
@@ -82,17 +103,15 @@
             left: 15px;
         }
 
+        .track-area p.chosen {
+            color: red;
+        }
+
 
         .track-wrap {
             display: none;
             width: 100%;
-            border-radius: 4%;
             overflow: hidden;
-        }
-
-        .track-wrap-dummy {
-            display: none;
-            background: yellow;
         }
 
         img.track-image {
@@ -100,34 +119,21 @@
             vertical-align: middle;
         }
 
-        .track-wrap-highlight {
-            z-index: -1;
-            background: yellow;
-            padding: 20px;
-            position: absolute;
-            height: 100%;
-        }
-
-        .track-wrap-highlight.highlighted {
-            display: block;
-            margin-left: -20px;
-            margin-top: -20px;
-        }
-
         .track-wrap.show {
             display: block;
             z-index: 1;
         }
 
-        .track-wrap.highlighted {
-            background: lightgreen;
-            border: 1px solid transparent;
-            border-radius: 5px;
+        .track-area-wrapper {
+            position: absolute;
+            top: 12%;
         }
 
-        .track-area-wrapper {
-            padding: 20px;
-            padding-top: 35px;
+        #top-left-image,
+        #top-right-image,
+        .track-area {
+            opacity: 0;
+            transition: opacity .5s ease;
         }
     </style>
 
@@ -141,9 +147,7 @@
             <div class="track-areas-display">
                 <div id="track-area" class="track-area">
                     <p class="round"></p>
-                    <div class="track-wrap track-wrap-highlight"></div>
                     <div class="choose-btn-wrapper">
-                        <button>Wählen</button>
                     </div>
                 </div>
             </div>

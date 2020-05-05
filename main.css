@@ -25,6 +25,8 @@ body {
     text-align: right;
 
     pointer-events: none;
+
+    margin-top: 20px;
 }
 
 #top-left-image {
@@ -84,4 +86,8 @@ body {
 
 #right-bar.show .next:hover {
     transform: scale(1.25);
+}
+
+.initial-display {
+    opacity: 1 !important;
 }
