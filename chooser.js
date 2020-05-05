@@ -4,6 +4,9 @@ var highlightAddMS = 50; //reduce step
 var highlightThreshold = 1000; //minimum next image time;
 var tracks = [];
 
+var waitUnhighlight = 500;
+var waitReHighlight = 500;
+
 var chosenTracks = [];
 
 var availableTrackIndices = [];
@@ -43,6 +46,9 @@ $('.track-areas-display').css('display', 'none');
 //activate first choose button
 $('#track-area-0 .choose-btn-wrapper').addClass('show');
 
+//print array to console once.
+console.log(availableTrackIndices);
+
 var running;
 $('.choose-btn-wrapper').click(function() {
 
@@ -57,7 +63,7 @@ $('.choose-btn-wrapper').click(function() {
 
     $('#track-area').css('display', 'none');
 
-    $('#track-area-' + round + ' .choose-btn-wrapper').removeClass('show');
+    $('#track-area-' + round + ' .choose-btn-wrapper').css('display', 'none');
 
     $('.track-wrap-highlight').removeClass('highlighted');
     $('#track-area-' + round + ' .track-wrap').removeClass('show');
@@ -65,12 +71,11 @@ $('.choose-btn-wrapper').click(function() {
 
 
     //get random trackIndex
-    var selectTrack = Math.floor(Math.random() * Math.floor(availableTrackIndices.length - 1));
-    chosenTracks.push(selectTrack);
-    console.log("selecting image", selectTrack + 1, 'index:', selectTrack);
 
-    availableTrackIndices.splice(availableTrackIndices[selectTrack], 1);
-
+    var randomAvailableIndex = Math.floor(Math.random() * Math.floor(availableTrackIndices.length - 1));
+    chosenTracks.push(availableTrackIndices[randomAvailableIndex]);
+    var chosen = availableTrackIndices.splice(randomAvailableIndex, 1);
+    console.log("chosen index", randomAvailableIndex, ", it is track-" + (parseInt(chosen) + 1));
 
     //highlightImage(selectTrack);
 
@@ -78,21 +83,21 @@ $('.choose-btn-wrapper').click(function() {
 
     promise = new Promise(function(resolve) {
         $('#track-area-' + round + ' p').addClass('chosen');
-        highlightSequence(0, (2 * tracks.length) + selectTrack + 1, highlightStartDelay, resolve);
+        highlightSequence(0, (2 * tracks.length) + randomAvailableIndex + 1, highlightStartDelay, resolve);
     });
 
     promise.then(function() {
         running = false;
         $('#track-area-' + (round + 1) + ' .choose-btn-wrapper').addClass('show');
-        console.log('available:', availableTrackIndices);
         console.log('chosen:', chosenTracks);
+        console.log('available:', availableTrackIndices);
     });
 
 });
 
 
 
-function doubleHighlight(index, waitUnhighlight, waitReHighlight) {
+function doubleHighlight(index, cb) {
     $('#track-area-' + round).addClass('highlighted');
 
     setTimeout(function() {
@@ -102,9 +107,10 @@ function doubleHighlight(index, waitUnhighlight, waitReHighlight) {
             $('#track-area-' + round).addClass('highlighted');
             setTimeout(function() {
                 $('#track-area-' + round).removeClass('highlighted');
-            }, waitReHighlight || 500);
-        }, waitReHighlight || 500);
-    }, waitUnhighlight || 500);
+                cb();
+            }, waitReHighlight);
+        }, waitReHighlight);
+    }, waitUnhighlight);
 }
 
 function highlightImage(index) {
@@ -132,8 +138,7 @@ function highlightSequence(runner, max, delay, resolve) {
 
     if (runner === max) {
         console.log("trigger double highlight");
-        doubleHighlight(runner % tracks.length);
-        resolve();
+        doubleHighlight(runner % tracks.length, resolve);
         return;
     }
     highlightImage(runner % tracks.length);
