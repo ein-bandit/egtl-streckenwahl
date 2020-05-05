@@ -89,6 +89,10 @@
             overflow: hidden;
 
             transition: all .5s ease !important;
+            background-image: url(assets/egtl-logo-light.png);
+            background-size: 50%;
+            background-repeat: no-repeat;
+            background-position: center;
 
         }
 
@@ -98,8 +102,20 @@
         }
 
         .track-wrap {
-            display: none;
+            opacity: 0;
             width: 100%;
+            transition: opacity .25s ease;
+        }
+
+        .track-wrap.show {
+            opacity: 1;
+            z-index: 1;
+        }
+
+        .track-wrap.highlighted {
+            background: lightgreen;
+            border: 1px solid transparent;
+            border-radius: 5px;
         }
 
         img.track-image {
@@ -111,7 +127,7 @@
             z-index: -1;
             position: absolute;
             height: 100%;
-            background-size: contain;
+            background-size: cover;
             background-repeat: no-repeat;
             background-position: center;
         }
@@ -120,17 +136,6 @@
             display: block;
             margin-left: -20px;
             margin-top: -20px;
-        }
-
-        .track-wrap.show {
-            display: block;
-            z-index: 1;
-        }
-
-        .track-wrap.highlighted {
-            background: lightgreen;
-            border: 1px solid transparent;
-            border-radius: 5px;
         }
 
         .track-area-wrapper {
