@@ -34,7 +34,7 @@ $('.preview-track').click(function(elem) {
     }
 });
 
-$('button').click(function() {
+$('.next').click(function() {
     console.log('redirect auslosung');
     window.location = 'chooser.html';
 });

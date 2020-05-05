@@ -9,13 +9,9 @@
     <meta name="description" content="EGTL Track Chooser">
     <meta name="author" content="ein-bandit">
 
-    <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-            background: black;
-        }
+    <link rel="stylesheet" type="text/css" href="main.css">
 
+    <style>
         #all-tracks {
             display: flex;
             flex-wrap: wrap;
@@ -127,7 +123,11 @@
 
 <body>
     <div id="all-container">
-        <button>zur Auslosung</button>
+        <div id="right-bar">
+            <div class="next"></div>
+        </div>
+        <div id="top-right-image">STRECKENVORSCHAU</div>
+        <div id="top-left-image"></div>
         <div id="all-tracks"></div>
         <div class="track-area-wrapper">
             <div class="track-areas-display">
@@ -140,6 +140,7 @@
     </div>
 
     <script src="node_modules/jquery/dist/jquery.js"></script>
+    <script src="global.js"></script>
     <script src="overview.js"></script>
 </body>
 

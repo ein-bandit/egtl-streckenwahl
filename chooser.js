@@ -34,16 +34,22 @@ for (var i = 0; i < track_length; i++) {
 //fill choosing track areas
 for (var t = 0; t < 6; t++) {
     $('#track-area').clone().attr('id', 'track-area-' + t).addClass('track-area').appendTo('.track-areas');
+    $('#track-area-' + t).children('p').text('R' + (t + 1));
 }
 
 $('.track-areas-display').css('display', 'none');
 
+//activate first choose button
+$('#track-area-0 .choose-btn-wrapper').addClass('show');
+
 var running;
-document.getElementById('choose-btn').addEventListener('click', function() {
+$('.choose-btn-wrapper > button').click(function() {
 
     $('#track-area').css('display', 'none');
 
     round = chosenTracks.length;
+
+    $('#track-area-' + round + ' .choose-btn-wrapper').removeClass('show');
 
     $('.track-wrap-highlight').removeClass('highlighted');
     $('#track-area-' + round + ' .track-wrap').removeClass('show');
@@ -63,8 +69,12 @@ document.getElementById('choose-btn').addEventListener('click', function() {
 
     highlightSequence(0, (2 * tracks.length) + selectTrack + 1, highlightStartDelay);
 
+    //start this code when selection / highlighting is finished.
     availableTrackIndices.splice(availableTrackIndices[selectTrack], 1);
     running = false;
+
+    $('#track-area-' + (round + 1) + ' .choose-btn-wrapper').addClass('show');
+
 
     console.log('available:', availableTrackIndices);
     console.log('chosen:', chosenTracks);

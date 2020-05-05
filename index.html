@@ -9,6 +9,8 @@
     <meta name="description" content="EGTL Track Chooser">
     <meta name="author" content="ein-bandit">
 
+    <link rel="stylesheet" type="text/css" href="main.css">
+
     <style>
         body {
             margin: 0;
@@ -21,8 +23,23 @@
             position: absolute;
         }
 
-        #streckenwahl {
+        #streckenwahl,
+        #streckenwahl-end {
             display: none;
+        }
+
+        p {
+            font-family: 'GT';
+            color: white;
+
+            position: absolute;
+            bottom: 25px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+
+            text-align: center;
         }
     </style>
 
@@ -30,27 +47,40 @@
 
 <body>
     <div id="video-container">
+        <div id="right-bar">
+            <div class="next"></div>
+        </div>
         <video id="logo" src="assets/videos/egtl-logo.mp4" loop="true"></video>
-        <video id="streckenwahl" src="assets/videos/egtl-streckenwahl.mp4"></video>
+        <video id="streckenwahl" src="assets/videos/egtl-streckenwahl-v2.mp4"></video>
+
+        <p>CLICK LOGO TO ADVANCE<br>USE RIGHT SIDEBAR TO NAVIGATE</p>
     </div>
 
     <script src="node_modules/jquery/dist/jquery.js"></script>
+    <script src="global.js"></script>
     <script>
         //load videos here
         $('#logo').click(function() {
             $('#logo').css('display', 'none');
             $('#streckenwahl').css('display', 'block');
+
             var sw = document.getElementById('streckenwahl');
             sw.play();
+            console.log("streckenwahl start triggered");
+        });
 
-            $('#streckenwahl').on('ended', function() {
-                $(this).fadeOut('2000', function() {
-                    $('a').css('opacity', 1);
-                    setTimeout(function() {
-                        window.location = 'overview.html';
-                    }, 1000);
-                });
+        $('#streckenwahl').on('ended', function(el) {
+            $('#logo').css('display', 'block');
+            setTimeout(function() {
+                $('#streckenwahl').css('display', 'none');
+                el.target.currentTime = 0;
             });
+        });
+
+        $('.next').click(function() {
+            setTimeout(function() {
+                window.location = 'overview.html';
+            }, 500);
         });
     </script>
 </body>

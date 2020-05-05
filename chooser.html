@@ -9,10 +9,16 @@
     <meta name="description" content="EGTL Track Chooser">
     <meta name="author" content="ein-bandit">
 
+    <link rel="stylesheet" type="text/css" href="main.css">
+
     <style>
         body {
             margin: 0;
             background: black;
+        }
+
+        #top-right-image {
+            background-image: url('assets/streckenwahl.png');
         }
 
         .choose-btn-wrapper {
@@ -21,6 +27,12 @@
             left: 50%;
             margin-right: -50%;
             transform: translate(-50%, -50%);
+
+            display: none;
+        }
+
+        .choose-btn-wrapper.show {
+            display: block;
         }
 
         #all-container {
@@ -61,11 +73,20 @@
             min-height: 303.5px;
         }
 
+        .track-area p {
+            color: white;
+            font-size: 24px;
+            font-family: 'GT';
+            position: absolute;
+            top: -15px;
+            left: 15px;
+        }
+
+
         .track-wrap {
             display: none;
             width: 100%;
-            border: 3px solid red;
-            border-radius: 5%;
+            border-radius: 4%;
             overflow: hidden;
         }
 
@@ -114,21 +135,22 @@
 
 <body>
     <div id="all-container">
+        <div id="top-right-image">STRECKENWAHL</div>
+        <div id="top-left-image"></div>
         <div class="track-area-wrapper">
             <div class="track-areas-display">
                 <div id="track-area" class="track-area">
+                    <p class="round"></p>
                     <div class="track-wrap track-wrap-highlight"></div>
+                    <div class="choose-btn-wrapper">
+                        <button>Wählen</button>
+                    </div>
                 </div>
             </div>
             <div class="track-areas">
             </div>
         </div>
-
     </div>
-    <div class="choose-btn-wrapper">
-        <button id="choose-btn">Choose</button>
-    </div>
-
     <script src="node_modules/jquery/dist/jquery.js"></script>
     <script src="chooser.js"></script>
 </body>
