@@ -13,11 +13,13 @@ wrapped in electron to generate builds for Windows.
 
 # Setup
 
-tested with Node v9.5.0 - other versions may work as well
+tested with Node v10.5.0 - newer versions may work as well
+10.0.* is minimum due to image preparation library "sharp"
+python needs to be installed on your system. additionally you will ned a system variable `PYTHON` pointing to python executable.
 
 1 - clone repository
 2 - run `npm install`
-3 - start app via `npm start`
+3 - start app via `npm start` or open the index.html file in chrome browser
 
 # Develepment
 
@@ -27,6 +29,11 @@ Best use is Google Chrome, since electron also uses a Chromium version to displa
 
 Changes in styling need to be checked with electron app before committing.
 Stylings are optimized for the electorn app, so look and feel may be slightly out of place when viewed with a standard webbrowser.
+
+## Preparing assets
+Take a screenshot from GT Sport in Arcade Mode where the track layout and the track times are visible.
+Crop the image to around the black border (685px height) and place it in `assets/tracks`.
+Run `npm run prepare-images` to create thumbnails used for overview page.
 
 # Future plans
 

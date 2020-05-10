@@ -1,24 +1,20 @@
-var track_length = 8;
+var track_length = 22;
 
 var tracks = [];
 
-for (var j = 0; j < 2; j++) {
+for (var i = 0; i < track_length; i++) {
+    tracks.push({
+        img: 'assets/tracks/track-' + (i + 1) + '.png',
+        imgThumb: 'assets/tracks/thumbs/track-' + (i + 1) + '-thumb.png',
+        id: 'track-' + i
+    });
 
+    var previewWrap = document.createElement('div');
+    previewWrap.classList = 'preview-track preview-track-' + i;
 
-    for (var i = 0; i < track_length; i++) {
-        tracks.push({
-            img: 'assets/tracks/track-' + (i + 1) + '.png',
-            imgFull: 'assets/tracks/track-' + (i + 1) + '-full.png',
-            id: 'track-' + i
-        });
+    $(previewWrap).css('background-image', 'url(' + tracks[i].imgThumb + ')');
 
-        var previewWrap = document.createElement('div');
-        previewWrap.classList = 'preview-track preview-track-' + i;
-
-        $(previewWrap).css('background-image', 'url(' + tracks[i].img + ')');
-
-        document.getElementById('all-tracks').appendChild(previewWrap);
-    }
+    document.getElementById('all-tracks').appendChild(previewWrap);
 }
 
 var prevIndex = -1;
@@ -31,7 +27,7 @@ $('.preview-track').mouseover(function(el) {
     }
     hovering = true;
     $('.track-wrap').addClass('show');
-    $('#track-area .track-wrap-highlight').css('background-image', 'url(' + tracks[$(el.target).index() - 1].img + ')');
+    $('#track-area .track-wrap-highlight').css('background-image', 'url(' + tracks[$(el.target).index() - 1].imgThumb + ')');
 }).mouseout(function(el) {
     if (prevIndex > -1) {
         return;
@@ -63,12 +59,12 @@ $('.preview-track').click(function(el) {
         $('.preview-border').css('top', $(el.target).position().top);
         $('.preview-border').css('left', $(el.target).position().left);
         $('.preview-border').css('width', $(el.target).width() - 2);
-        $('.preview-border').css('height', $(el.target).height() - 2);
+        $('.preview-border').css('height', $(el.target).height() - 4);
 
         $('#track-area').addClass('big');
         $('#track-area .track-wrap-highlight').addClass('show');
         //setTimeout(() => {
-        $('#track-area .track-wrap-highlight').css('background-image', 'url(' + tracks[prevIndex].imgFull + ')');
+        $('#track-area .track-wrap-highlight').css('background-image', 'url(' + tracks[prevIndex].img + ')');
         //}, 50);
     }
 });

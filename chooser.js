@@ -1,4 +1,4 @@
-var track_length = 8;
+var track_length = 22;
 var highlightStartDelay = 100; //start time. add gets added erery step
 var highlightAddMS = 50; //reduce step 
 var highlightThreshold = 1000; //minimum next image time;
