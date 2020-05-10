@@ -163,5 +163,5 @@ $('.next').click(function() {
 setTimeout(toggleVisibility, 500);
 
 function toggleVisibility() {
-    $('#all-tracks, #top-left-image, #top-right-image, #track-area').toggleClass('initial-display');
+    $('#all-tracks, #top-left-image, #top-right-image, #track-area, .slider-text').toggleClass('initial-display');
 }
