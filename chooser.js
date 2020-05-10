@@ -17,7 +17,7 @@ var round = -1;
 
 for (var i = 0; i < track_length; i++) {
     tracks.push({
-        img: 'assets/tracks/track-' + (i + 1) + '.png',
+        img: 'assets/tracks/thumbs/track-' + (i + 1) + '-thumb.png',
         id: 'track-' + i
     });
     availableTrackIndices.push(i);
@@ -83,7 +83,7 @@ $('.choose-btn-wrapper').click(function() {
 
     promise = new Promise(function(resolve) {
         $('#track-area-' + round + ' p').addClass('chosen');
-        highlightSequence(0, (2 * tracks.length) + randomAvailableIndex + 1, highlightStartDelay, resolve);
+        highlightSequence(0, tracks.length + randomAvailableIndex + 1, highlightStartDelay, resolve);
     });
 
     promise.then(function() {
