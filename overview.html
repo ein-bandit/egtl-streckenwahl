@@ -13,13 +13,8 @@
 
     <style>
         #all-tracks {
-            display: flex;
-            flex-wrap: wrap;
-
             position: absolute;
             bottom: 0;
-
-            overflow: hidden;
 
             height: 15vh;
             width: 100%;
@@ -28,12 +23,47 @@
             z-index: 3;
         }
 
+        .slider-text {
+            width: 200px;
+            height: 20px;
+            position: absolute;
+            bottom: 120px;
+            margin-right: -50%;
+            transform: translate(-50%, -50%);
+            left: 50%;
+            text-align: center;
+            font-family: 'GT';
+            color: white;
+        }
+
+        .slider-text .prev,
+        .slider-text .next {
+            position: absolute;
+            width: 20px;
+            height: 100%;
+            top: 0;
+            cursor: pointer;
+        }
+
+        .slider-text .prev:hover,
+        .slider-text .next:hover {
+            zoom: 1.5;
+            top: -3px;
+        }
+
+        .slider-text .prev {
+            left: 0;
+        }
+
+        .slider-text .next {
+            right: 0;
+        }
+
         #right-bar.show {
             z-index: 5;
         }
 
         .preview-track {
-            width: calc(100%/8);
             height: calc(30vh/2);
             background-size: cover;
             background-repeat: no-repeat;
@@ -129,7 +159,7 @@
             height: 100%;
             background-size: cover;
             background-repeat: no-repeat;
-            background-position: center;
+            background-position: bottom;
         }
 
         .track-wrap-highlight.highlighted {
@@ -166,8 +196,8 @@
         </div>
         <div id="top-right-image">STRECKENVORSCHAU</div>
         <div id="top-left-image"></div>
-        <div id="all-tracks">
-            <div class="preview-border"></div>
+        <div id="all-tracks-wrapper">
+            <div id="all-tracks"></div>
         </div>
         <div class="track-area-wrapper">
             <div class="track-areas-display">
@@ -180,6 +210,7 @@
     </div>
 
     <script src="node_modules/jquery/dist/jquery.js"></script>
+    <script src="node_modules/siema/dist/siema.min.js"></script>
     <script src="global.js"></script>
     <script src="overview.js"></script>
 </body>
