@@ -1,7 +1,7 @@
 var track_length = 22;
-var highlightStartDelay = 100; //start time. add gets added erery step
-var highlightAddMS = 50; //reduce step 
-var highlightThreshold = 1000; //minimum next image time;
+var highlightStartDelay = 50; //start time. add gets added erery step
+var highlightAddMS = 50; //reduce step (calculated dynamically)
+var highlightThreshold = 800; //minimum next image time;
 var tracks = [];
 
 var waitUnhighlight = 500;
@@ -50,13 +50,14 @@ $('#track-area-0 .choose-btn-wrapper').addClass('show');
 console.log(availableTrackIndices);
 
 var running;
+var lastTrack = -1;
+var lastAvailableIndex = -1;
 $('.choose-btn-wrapper').click(function() {
 
     if (running) {
         console.error("already choosing");
         return;
     }
-
 
     round = chosenTracks.length;
     running = true;
@@ -70,12 +71,17 @@ $('.choose-btn-wrapper').click(function() {
 
 
 
-    //get random trackIndex
-
+    //get an index from all available indices.
     var randomAvailableIndex = Math.floor(Math.random() * Math.floor(availableTrackIndices.length - 1));
-    chosenTracks.push(availableTrackIndices[randomAvailableIndex]);
-    var chosen = availableTrackIndices.splice(randomAvailableIndex, 1);
-    console.log("chosen index", randomAvailableIndex, ", it is track-" + (parseInt(chosen) + 1));
+    //use random index to get the track index.
+    var randomTrack = availableTrackIndices[randomAvailableIndex];
+    chosenTracks.push(randomTrack);
+
+    //store indices for div deletion after highlighting.
+    lastTrack = randomTrack;
+    lastAvailableIndex = randomAvailableIndex;
+
+    console.log("chosen track index: ", randomTrack, ", it is track-" + (parseInt(randomTrack) + 1));
 
     //highlightImage(selectTrack);
 
@@ -83,12 +89,23 @@ $('.choose-btn-wrapper').click(function() {
 
     promise = new Promise(function(resolve) {
         $('#track-area-' + round + ' p').addClass('chosen');
-        highlightSequence(0, tracks.length + randomAvailableIndex + 1, highlightStartDelay, resolve);
+        var steps = availableTrackIndices.length + randomAvailableIndex + 1;
+        console.log("steps: ", steps);
+        //-3 last three images should have max time
+        highlightAddMS = (highlightThreshold - highlightStartDelay) / (steps - 3);
+        highlightSequence(0, steps, highlightStartDelay, resolve);
     });
 
     promise.then(function() {
         running = false;
         $('#track-area-' + (round + 1) + ' .choose-btn-wrapper').addClass('show');
+        //delete all chosen tracks from other areas
+        for (var i = round + 1; i < 6; i++) {
+            $('#track-area-' + i + ' > .track-wrap-' + lastTrack).remove();
+        }
+        lastTrack = -1;
+        availableTrackIndices.splice(lastAvailableIndex, 1);
+        lastAvailableIndex = -1;
         console.log('chosen:', chosenTracks);
         console.log('available:', availableTrackIndices);
     });
@@ -138,10 +155,10 @@ function highlightSequence(runner, max, delay, resolve) {
 
     if (runner === max) {
         console.log("trigger double highlight");
-        doubleHighlight(runner % tracks.length, resolve);
+        doubleHighlight(availableTrackIndices[runner % availableTrackIndices.length], resolve);
         return;
     }
-    highlightImage(runner % tracks.length);
+    highlightImage(availableTrackIndices[runner % availableTrackIndices.length]);
 
     //start next sequence
     setTimeout(function() {
