@@ -50,7 +50,6 @@ setTimeout(() => {
         $('.slider-text .next').click(function(el) {
             $('.preview-track-' + prevIndex).trigger('click').trigger('mouseout');
 
-            console.log("clicked next");
             if (currentPage === pages - 1) {
                 return;
             }
@@ -102,6 +101,7 @@ $('.preview-track').click(function(el) {
     var elem = $(el.target).parent();
     if (prevIndex === elem.index()) {
         $('.preview-border').removeClass('show');
+        $('#track-area').css('width', '');
         $('#track-area').removeClass('big');
         prevIndex = -1;
         setTimeout(() => {
@@ -111,24 +111,40 @@ $('.preview-track').click(function(el) {
         $('.preview-border').addClass('show');
 
         prevIndex = elem.index();
-        console.log('move border to ', prevIndex, $(el.target).position());
         var rect = el.target.getBoundingClientRect();
-        console.log(rect);
         $('.preview-border').css('top', 0);
         $('.preview-border').css('left', rect.left);
         //dirty hack to show border on last track completely.
-        console.log(prevIndex);
         var extra = ((prevIndex % 8) === 7) || (prevIndex === track_length - 1) ? 2 : 0;
         $('.preview-border').css('width', (elem.width() - 2) - extra);
         $('.preview-border').css('height', elem.height() - 4);
 
         $('#track-area').addClass('big');
         $('#track-area .track-wrap-highlight').addClass('show');
-        //setTimeout(() => {
+
         $('#track-area .track-wrap-highlight').css('background-image', 'url(' + tracks[prevIndex].img + ')');
-        //}, 50);
+        //another dirty hack to adjust width of highlight wrap.
+        imgdim();
     }
 });
+
+function imgdim() {
+    var imageSrc = $('#track-area .track-wrap-highlight')[0]
+        .style
+        .backgroundImage
+        .replace(/url\((['"])?(.*?)\1\)/gi, '$2')
+        .split(',')[0];
+
+    var image = new Image();
+    image.src = imageSrc;
+    image.onload = function() {
+        var width = image.width,
+            height = image.height;
+        var ratio = width / height;
+        $('#track-area').css('width', 356 * ratio);
+    }
+
+}
 
 $('.next').click(function() {
 
