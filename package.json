@@ -1,5 +1,6 @@
 {
-    "name": "track-chooser",
+    "name": "egtl-streckenwahl",
+    "productName": "EGTL Streckenwahl",
     "version": "1.0.0",
     "description": "",
     "main": "main.js",
@@ -10,12 +11,14 @@
         "postinstall": "npm run prepare-images",
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "electron .",
-        "prepare-images": "node ./prepare-images.js"
+        "prepare-images": "node ./prepare-images.js",
+        "dist": "electron-builder"
     },
     "author": "",
     "license": "ISC",
     "devDependencies": {
         "electron": "^8.2.5",
+        "electron-builder": "^22.6.0",
         "sharp": "^0.25.2"
     },
     "dependencies": {
