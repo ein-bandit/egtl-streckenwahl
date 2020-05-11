@@ -46,9 +46,6 @@ $('.track-areas-display').css('display', 'none');
 //activate first choose button
 $('#track-area-0 .choose-btn-wrapper').addClass('show');
 
-//print array to console once.
-console.log(availableTrackIndices);
-
 var running;
 var lastTrack = -1;
 var lastAvailableIndex = -1;
@@ -59,12 +56,28 @@ $('.choose-btn-wrapper').click(function() {
         return;
     }
 
+    $('#track-area-' + round + ' .redraw').removeClass('show');
+
     round = chosenTracks.length;
     running = true;
 
+    //prepare next track area: only if last available index is present, so it is no repeat round.
+    if (lastAvailableIndex > -1) {
+        //remove last chosen index from available.
+        availableTrackIndices.splice(lastAvailableIndex, 1);
+        //delete all chosen tracks from next track-area
+        for (var i = 0; i < chosenTracks.length; i++) {
+            var chosenTrack = chosenTracks[i];
+            $('#track-area-' + round + ' > .track-wrap-' + chosenTrack).remove();
+        }
+    }
+
+    console.log("chosen", chosenTracks);
+    console.log("available tracks", availableTrackIndices);
+
     $('#track-area').css('display', 'none');
 
-    $('#track-area-' + round + ' .choose-btn-wrapper').css('display', 'none');
+    $('#track-area-' + round + ' .choose-btn-wrapper').removeClass('show');
 
     $('.track-wrap-highlight').removeClass('highlighted');
     $('#track-area-' + round + ' .track-wrap').removeClass('show');
@@ -81,7 +94,7 @@ $('.choose-btn-wrapper').click(function() {
     lastTrack = randomTrack;
     lastAvailableIndex = randomAvailableIndex;
 
-    console.log("chosen track index: ", randomTrack, ", it is track-" + (parseInt(randomTrack) + 1));
+    console.log("chosen track index: ", randomTrack);
 
     //highlightImage(selectTrack);
 
@@ -98,18 +111,35 @@ $('.choose-btn-wrapper').click(function() {
 
     promise.then(function() {
         running = false;
+
+        $('#track-area-' + round + ' .redraw').addClass('show');
         $('#track-area-' + (round + 1) + ' .choose-btn-wrapper').addClass('show');
-        //delete all chosen tracks from other areas
-        for (var i = round + 1; i < 6; i++) {
-            $('#track-area-' + i + ' > .track-wrap-' + lastTrack).remove();
-        }
-        lastTrack = -1;
-        availableTrackIndices.splice(lastAvailableIndex, 1);
-        lastAvailableIndex = -1;
+
         console.log('chosen:', chosenTracks);
-        console.log('available:', availableTrackIndices);
     });
 
+});
+
+$('.track-area .redraw').click(function(el) {
+
+    //redraw clicked.
+    if (!$(el.target).hasClass('show')) return;
+
+    //remove redraw button.
+    $(this).removeClass('show');
+    //reset displayed track
+    $('#track-area-' + round + ' .track-wrap.show').removeClass('show');
+    //remove element from chosen
+    chosenTracks.splice(chosenTracks.length - 1, 1);
+
+    //reset chosen index.
+    lastAvailableIndex = -1;
+
+    //reset dice button.
+    $('#track-area-' + round + ' .choose-btn-wrapper').addClass('show');
+    $('#track-area-' + (round + 1) + ' .choose-btn-wrapper').removeClass('show');
+    //reset red color of text.
+    $('#track-area-' + round + ' p').removeClass('chosen');
 });
 
 
@@ -120,7 +150,7 @@ function doubleHighlight(index, cb) {
     setTimeout(function() {
         $('#track-area-' + round).removeClass('highlighted');
         setTimeout(function() {
-            console.log('track-wrap-', index);
+            console.log('track-wrap-', index - 1);
             $('#track-area-' + round).addClass('highlighted');
             setTimeout(function() {
                 $('#track-area-' + round).removeClass('highlighted');

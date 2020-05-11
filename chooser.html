@@ -129,6 +129,38 @@
             top: 12%;
         }
 
+        .redraw {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 17px;
+            right: 17px;
+            cursor: pointer;
+            font-family: 'GT';
+
+            background-image: url(assets/redraw.svg);
+            background-size: cover;
+            background-repeat: no-repeat;
+
+            transform: rotate(90deg);
+
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .5s ease;
+        }
+
+        .redraw.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .redraw.show:hover {
+            top: 15px;
+            right: 15px;
+            width: 25px;
+            height: 25px;
+        }
+
         #top-left-image,
         #top-right-image,
         .track-area {
@@ -147,6 +179,7 @@
             <div class="track-areas-display">
                 <div id="track-area" class="track-area">
                     <p class="round"></p>
+                    <div class="redraw"></div>
                     <div class="choose-btn-wrapper">
                     </div>
                 </div>
