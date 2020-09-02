@@ -1,23 +1,35 @@
-var track_length = 22;
+var tracks = JSON.parse(localStorage.getItem('trackChooser')).tracks;
+var selectableTracks = JSON.parse(localStorage.getItem('trackChooser')).choosableTrackIndices;
 
-var tracks = [];
-
-for (var i = 0; i < track_length; i++) {
-    tracks.push({
-        img: 'assets/tracks/track-' + (i + 1) + '.png',
-        imgThumb: 'assets/tracks/thumbs/track-' + (i + 1) + '-thumb.png',
-        id: 'track-' + i
-    });
+for (var i = 0; i < tracks.length; i++) {
 
     var previewWrap = document.createElement('div');
     previewWrap.classList = 'preview-track preview-track-' + i;
 
     $(previewWrap).css('background-image', 'url(' + tracks[i].imgThumb + ')');
 
+    var check = document.createElement('div');
+    check.classList = 'check';
+
+    previewWrap.appendChild(check);
+
+    var checkmark = document.createElement('div');
+    checkmark.classList = 'checkmark';
+    checkmark.innerHTML = 'L';
+    check.appendChild(checkmark);
+
     document.getElementById('all-tracks').appendChild(previewWrap);
 }
 
-var pages = Math.ceil(track_length / 8);
+//mark initial selected tracks.
+selectableTracks.forEach(function(elem) {
+    $('.preview-track-' + elem).children('.check').addClass('checked');
+});
+
+$('p.selected > span').text(selectableTracks.length);
+
+var pages = Math.ceil(tracks.length / 8);
+console.log("pages", pages, tracks.length);
 var currentPage = 0;
 
 var slider = new Siema({
@@ -94,11 +106,42 @@ $('.preview-track').mouseover(function(el) {
             $('#track-area .track-wrap-highlight').css('background-image', '')
         }
     }, 500);
-})
+});
 
+window.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+});
 //preview track click: show big image.
-$('.preview-track').click(function(el) {
-    var elem = $(el.target).parent();
+$('.preview-track').mousedown(function(evt) {
+
+    switch (evt.which) {
+        case 1:
+            previewClickLeft(evt.target);
+            break;
+        case 3:
+            previewClickRight(evt.target);
+            break;
+    }
+});
+
+function previewClickRight(target) {
+
+    // if inserted remove it.
+    console.log("clicked right");
+    //add element to availableindices.
+    console.log(target);
+
+    toggleElementToSelectableTracksAndSave($(target).parent().index());
+
+    //activate green mark on image.
+    console.log(selectableTracks.length);
+    $('p.selected > span').text(selectableTracks.length);
+
+    $(target).children('.check').toggleClass('checked');
+}
+//preview clicked left
+function previewClickLeft(target) {
+    var elem = $(target).parent();
     if (prevIndex === elem.index()) {
         $('.preview-border').removeClass('show');
         $('#track-area').css('width', '');
@@ -111,11 +154,11 @@ $('.preview-track').click(function(el) {
         $('.preview-border').addClass('show');
 
         prevIndex = elem.index();
-        var rect = el.target.getBoundingClientRect();
+        var rect = target.getBoundingClientRect();
         $('.preview-border').css('top', 0);
         $('.preview-border').css('left', rect.left);
         //dirty hack to show border on last track completely.
-        var extra = ((prevIndex % 8) === 7) || (prevIndex === track_length - 1) ? 2 : 0;
+        var extra = ((prevIndex % 8) === 7) || (prevIndex === tracks.length - 1) ? 2 : 0;
         $('.preview-border').css('width', (elem.width() - 2) - extra);
         $('.preview-border').css('height', elem.height() - 4);
 
@@ -126,7 +169,24 @@ $('.preview-track').click(function(el) {
         //another dirty hack to adjust width of highlight wrap.
         imgdim();
     }
-});
+}
+
+function toggleElementToSelectableTracksAndSave(index) {
+    console.log("persisting element with index", index);
+    if (selectableTracks.includes(index)) {
+        selectableTracks = selectableTracks.filter(function(o) {
+            return o !== index;
+        });
+    } else {
+        selectableTracks.push(index);
+    }
+
+    localStorage.setItem('trackChooser', JSON.stringify({
+        tracks: tracks,
+        choosableTrackIndices: selectableTracks
+    }));
+    console.log(JSON.parse(localStorage.getItem('trackChooser')));
+}
 
 function imgdim() {
     var imageSrc = $('#track-area .track-wrap-highlight')[0]
@@ -163,5 +223,9 @@ $('.next').click(function() {
 setTimeout(toggleVisibility, 500);
 
 function toggleVisibility() {
-    $('#all-tracks, #top-left-image, #top-right-image, #track-area, .slider-text').toggleClass('initial-display');
+    $('#all-tracks, #top-left-image, #top-right-image, #track-area, .slider-text, p').toggleClass('initial-display');
 }
+setTimeout(function() {
+    $('p.text').removeClass('initial-display').addClass('visible');
+    $('p.text').fadeOut(500);
+}, 3500);

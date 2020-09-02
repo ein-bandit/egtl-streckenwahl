@@ -1,33 +1,55 @@
-var track_length = 22;
 var highlightStartDelay = 50; //start time. add gets added erery step
 var highlightAddMS = 50; //reduce step (calculated dynamically)
 var highlightThreshold = 800; //minimum next image time;
-var tracks = [];
 
 var waitUnhighlight = 500;
 var waitReHighlight = 500;
 
-var chosenTracks = [];
 
-var availableTrackIndices = [];
+var alltracks = JSON.parse(localStorage.getItem('trackChooser')).tracks;
+var selectableTracks = JSON.parse(localStorage.getItem('trackChooser')).choosableTrackIndices;
+
+var availableTracks;
+//pull track objects from all tracks by indices
+if (selectableTracks.length === 0) {
+    console.warn("no tracks selected, choosing from all tracks", alltracks.length);
+    availableTracks = alltracks;
+} else {
+    availableTracks = alltracks.filter(function(track, index) {
+        return selectableTracks.includes(index);
+    });
+    console.log("choosing from tracks", availableTracks.length, availableTracks);
+}
+
+availableTrackIndices = getArrayWithIndices(availableTracks);
+console.log(availableTrackIndices);
+
+if (availableTracks.length < 6) {
+    $('.choose-btn-wrapper').removeClass('show');
+    alert('You have selected to few tracks. Select at least 6 tracks from the overview page.');
+
+    setTimeout(function() {
+        window.location = 'overview.html';
+    }, 1000);
+
+}
+
+//refactor tracks.
+
+var chosenTracks = [];
 
 var running = null;
 
 var round = -1;
 
-for (var i = 0; i < track_length; i++) {
-    tracks.push({
-        img: 'assets/tracks/thumbs/track-' + (i + 1) + '-thumb.png',
-        id: 'track-' + i
-    });
-    availableTrackIndices.push(i);
+for (var i = 0; i < availableTracks.length; i++) {
 
     var wrap = document.createElement('div');
     wrap.classList = 'track-wrap track-wrap-' + i;
 
     var img = document.createElement('img');
-    img.id = tracks[i].id;
-    img.src = tracks[i].img;
+    img.id = availableTracks[i].id;
+    img.src = availableTracks[i].imgThumb;
     img.classList = ['track-image']
 
     wrap.appendChild(img);
@@ -198,8 +220,16 @@ function highlightSequence(runner, max, delay, resolve) {
 
 }
 
+function getArrayWithIndices(arr) {
+    return Array.from(arr.map(function(o, i) {
+        return i;
+    }));
+}
+
 //initial visibility of page elements
-setTimeout(toggleVisibility, 500);
+if (availableTracks.length >= 6) {
+    setTimeout(toggleVisibility, 500);
+}
 
 function toggleVisibility() {
     $('#top-left-image, #top-right-image, .track-area').toggleClass('initial-display');

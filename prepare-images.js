@@ -1,6 +1,6 @@
 const sharp = require('sharp');
 
-for (var i = 0; i < 22; i++) {
+for (var i = 0; i < 75; i++) {
     let originalImage = `assets/tracks/track-${i+1}.png`;
     let outputImage = `assets/tracks/thumbs/track-${i+1}-thumb.png`;
 

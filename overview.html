@@ -70,6 +70,7 @@
             background-size: cover;
             background-repeat: no-repeat;
             background-position: 100% 30%;
+            position: relative;
         }
 
         .preview-border {
@@ -161,7 +162,7 @@
             height: 100%;
             background-size: cover;
             background-repeat: no-repeat;
-            background-position: bottom;
+            background-position: 50% 70%
         }
 
         .track-wrap-highlight.highlighted {
@@ -173,6 +174,32 @@
         .track-area-wrapper {
             margin: 20px;
         }
+
+        .check {
+            position: absolute;
+            right: -15px;
+            top: -3px;
+            width: 46px;
+            height: 21px;
+            background: green;
+            overflow: hidden;
+            transform: rotate(45deg);
+            visibility: hidden;
+        }
+
+        .check.checked {
+            visibility: visible;
+        }
+
+        .checkmark {
+            font-family: arial;
+            transform: scaleX(-1);
+            display: flex;
+            justify-content: center;
+            margin-top: 3px;
+            color: white;
+        }
+
 
         button {
             position: absolute;
@@ -186,6 +213,35 @@
         #track-area {
             opacity: 0;
             transition: opacity .5s ease;
+        }
+
+        p.text,
+        p.selected {
+
+            font-family: 'GT';
+            color: white;
+
+            position: absolute;
+            bottom: 190px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+
+            text-align: center;
+
+            opacity: 0;
+        }
+
+        p.selected {
+            right: 0;
+            justify-content: flex-end;
+            margin-right: 2%;
+            bottom: 130px;
+        }
+
+        p.text.visible {
+            opacity: 1;
         }
     </style>
 
@@ -208,6 +264,8 @@
                 </div>
             </div>
         </div>
+        <p class="text">RIGHT CLICK TO (UN)SELECT</p>
+        <p class="selected"><span>0</span>&nbsp;SELECTED</p>
 
     </div>
 
