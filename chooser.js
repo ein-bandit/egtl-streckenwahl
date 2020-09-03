@@ -21,8 +21,8 @@ if (selectableTracks.length === 0) {
     console.log("choosing from tracks", availableTracks.length, availableTracks);
 }
 
-availableTrackIndices = getArrayWithIndices(availableTracks);
-console.log(availableTrackIndices);
+//make a backup for comparing if errors occur.
+const originalAvailableTracks = Array.from(availableTracks);
 
 if (availableTracks.length < 6) {
     $('.choose-btn-wrapper').removeClass('show');
@@ -34,34 +34,40 @@ if (availableTracks.length < 6) {
 
 }
 
-//refactor tracks.
-
 var chosenTracks = [];
 
 var running = null;
 
 var round = -1;
 
-for (var i = 0; i < availableTracks.length; i++) {
-
-    var wrap = document.createElement('div');
-    wrap.classList = 'track-wrap track-wrap-' + i;
-
-    var img = document.createElement('img');
-    img.id = availableTracks[i].id;
-    img.src = availableTracks[i].imgThumb;
-    img.classList = ['track-image']
-
-    wrap.appendChild(img);
-    document.getElementById('track-area').appendChild(wrap);
-}
-
-//fill choosing track areas
+//copy inital track-area layout 6 times
 for (var t = 0; t < 6; t++) {
     $('#track-area').clone().attr('id', 'track-area-' + t).addClass('track-area').appendTo('.track-areas');
     $('#track-area-' + t).children('p').text('R' + (t + 1));
     $('#track-area-' + t + ' .choose-btn-wrapper').css('background-image', 'url(assets/dice-' + (t + 1) + '.svg)');
 }
+
+//filling will be started just before drawing of specific round starts.
+function createTrackWrapWithTracks(parentId) {
+
+    //remove all previously generated track wraps (to have a clean state, even if the wraps did not change)
+    $('#' + parentId).children('.track-wrap').remove();
+
+    console.log("creating tracks for wrapper ", parentId);
+    for (var index = 0; index < availableTracks.length; index++) {
+        var wrap = document.createElement('div');
+        wrap.classList = 'track-wrap track-wrap-' + index;
+
+        var img = document.createElement('img');
+        img.id = availableTracks[index].id;
+        img.src = availableTracks[index].imgThumb;
+        img.classList = ['track-image']
+
+        wrap.appendChild(img);
+        document.getElementById(parentId).appendChild(wrap);
+    }
+}
+
 
 $('.track-areas-display').css('display', 'none');
 
@@ -69,8 +75,9 @@ $('.track-areas-display').css('display', 'none');
 $('#track-area-0 .choose-btn-wrapper').addClass('show');
 
 var running;
-var lastTrack = -1;
-var lastAvailableIndex = -1;
+
+var lastChosenTrackId = null;
+
 $('.choose-btn-wrapper').click(function() {
 
     if (running) {
@@ -83,52 +90,48 @@ $('.choose-btn-wrapper').click(function() {
     round = chosenTracks.length;
     running = true;
 
-    //prepare next track area: only if last available index is present, so it is no repeat round.
-    if (lastAvailableIndex > -1) {
+    //filter last chosen track from available tracks.
+    if (lastChosenTrackId) {
         //remove last chosen index from available.
-        availableTrackIndices.splice(lastAvailableIndex, 1);
-        //delete all chosen tracks from next track-area
-        for (var i = 0; i < chosenTracks.length; i++) {
-            var chosenTrack = chosenTracks[i];
-            $('#track-area-' + round + ' > .track-wrap-' + chosenTrack).remove();
-        }
+        console.log("availableTracks before filter", availableTracks.length, availableTracks);
+        availableTracks = availableTracks.filter(function(t) {
+            return t.id !== lastChosenTrackId
+        });
+        console.log("availableTracks after filter", availableTracks.length, availableTracks);
     }
 
-    console.log("chosen", chosenTracks);
-    console.log("available tracks", availableTrackIndices);
+    //create new track wraps for next round
+    createTrackWrapWithTracks('track-area-' + round);
 
-    $('#track-area').css('display', 'none');
+    console.log("already chosen", chosenTracks);
+
+    //$('#track-area').css('display', 'none');
 
     $('#track-area-' + round + ' .choose-btn-wrapper').removeClass('show');
 
     $('.track-wrap-highlight').removeClass('highlighted');
     $('#track-area-' + round + ' .track-wrap').removeClass('show');
 
-
-
     //get an index from all available indices.
-    var randomAvailableIndex = Math.floor(Math.random() * Math.floor(availableTrackIndices.length - 1));
+    var randomAvailableIndex = Math.round(Math.random() * Math.floor(availableTracks.length - 1));
+    console.log("got random", randomAvailableIndex);
     //use random index to get the track index.
-    var randomTrack = availableTrackIndices[randomAvailableIndex];
-    chosenTracks.push(randomTrack);
+    var randomTrack = availableTracks[randomAvailableIndex];
+    chosenTracks.push(randomTrack.id);
 
-    //store indices for div deletion after highlighting.
-    lastTrack = randomTrack;
-    lastAvailableIndex = randomAvailableIndex;
+    console.log("chosen track: ", randomTrack);
+    //store track for removing from availableTracks before next draw
+    lastChosenTrackId = randomTrack.id;
 
-    console.log("chosen track index: ", randomTrack);
-
-    //highlightImage(selectTrack);
-
-    //start this code when selection / highlighting is finished.
 
     promise = new Promise(function(resolve) {
         $('#track-area-' + round + ' p').addClass('chosen');
-        var steps = availableTrackIndices.length + randomAvailableIndex + 1;
-        if (availableTrackIndices.length < 6 && availableTrackIndices.length > 1) {
+        var steps = availableTracks.length + randomAvailableIndex + 1;
+        if (availableTracks.length < 6 && availableTracks.length > 1) {
             steps += 6;
         }
-        console.log("steps: ", steps);
+
+        //console.log("steps: ", steps);
         //-3 last three images should have max time
         highlightAddMS = (highlightThreshold - highlightStartDelay) / (steps - 3);
         highlightSequence(0, steps, highlightStartDelay, resolve);
@@ -157,8 +160,7 @@ $('.track-area .redraw').click(function(el) {
     //remove element from chosen
     chosenTracks.splice(chosenTracks.length - 1, 1);
 
-    //reset chosen index.
-    lastAvailableIndex = -1;
+    lastChosenTrackId = null;
 
     //reset dice button.
     $('#track-area-' + round + ' .choose-btn-wrapper').addClass('show');
@@ -175,7 +177,6 @@ function doubleHighlight(index, cb) {
     setTimeout(function() {
         $('#track-area-' + round).removeClass('highlighted');
         setTimeout(function() {
-            console.log('track-wrap-', index - 1);
             $('#track-area-' + round).addClass('highlighted');
             setTimeout(function() {
                 $('#track-area-' + round).removeClass('highlighted');
@@ -210,10 +211,10 @@ function highlightSequence(runner, max, delay, resolve) {
 
     if (runner === max) {
         console.log("trigger double highlight");
-        doubleHighlight(availableTrackIndices[runner % availableTrackIndices.length], resolve);
+        doubleHighlight(runner % availableTracks.length, resolve);
         return;
     }
-    highlightImage(availableTrackIndices[runner % availableTrackIndices.length]);
+    highlightImage(runner % availableTracks.length);
 
     //start next sequence
     setTimeout(function() {

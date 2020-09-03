@@ -7,9 +7,9 @@ var tracks = [];
 
 for (var i = 0; i < track_length; i++) {
     var track = {
+        id: 'track-' + i,
         img: 'assets/tracks/track-' + (i + 1) + '.png',
-        imgThumb: 'assets/tracks/thumbs/track-' + (i + 1) + '-thumb.png',
-        id: 'track-' + i
+        imgThumb: 'assets/tracks/thumbs/track-' + (i + 1) + '-thumb.png'
     };
     tracks.push(track);
 }
