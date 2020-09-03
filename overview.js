@@ -44,7 +44,16 @@ var slider = new Siema({
     loop: false,
     rtl: false,
     onInit: () => {},
-    onChange: () => {},
+    onChange: () => {
+        $('.preview-border').removeClass('show');
+        $('#track-area').css('width', '');
+        $('#track-area').removeClass('big');
+        setTimeout(() => {
+            $('#track-area .track-wrap-highlight').removeClass('show');
+        }, 150);
+        prevIndex = -1;
+        toggleCheckWrap(-1);
+    },
 });
 
 function updateSliderText() {
