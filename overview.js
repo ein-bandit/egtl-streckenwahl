@@ -23,7 +23,7 @@ for (var i = 0; i < tracks.length; i++) {
 
 //mark initial selected tracks.
 selectableTracks.forEach(function(elem) {
-    $('.preview-track-' + elem).children('.check').addClass('checked');
+    toggleCheckPreview(elem);
 });
 
 $('p.selected > span').text(selectableTracks.length);
@@ -94,7 +94,11 @@ $('.preview-track').mouseover(function(el) {
 
     hovering = true;
     $('.track-wrap').addClass('show');
-    $('#track-area .track-wrap-highlight').css('background-image', 'url(' + tracks[$(el.target).parent().index()].imgThumb + ')');
+
+    var index = $(el.target).parent().index();
+    changePreviewBackground(index);
+    toggleCheckWrap(index);
+    //$('#track-area .track-wrap-highlight').css('background-image', 'url(' + tracks[$(el.target).parent().index()].imgThumb + ')');
 }).mouseout(function(el) {
     if (prevIndex > -1) {
         return;
@@ -113,7 +117,9 @@ window.addEventListener('contextmenu', function(e) {
 });
 //preview track click: show big image.
 $('.preview-track').mousedown(function(evt) {
-
+    if (!faded) {
+        fadeOutText();
+    }
     switch (evt.which) {
         case 1:
             previewClickLeft(evt.target);
@@ -125,30 +131,19 @@ $('.preview-track').mousedown(function(evt) {
 });
 
 function previewClickRight(target) {
-
-    // if inserted remove it.
-    console.log("clicked right");
-    //add element to availableindices.
-    console.log(target);
-
     toggleElementToSelectableTracksAndSave($(target).parent().index());
-
-    //activate green mark on image.
-    console.log(selectableTracks.length);
-    $('p.selected > span').text(selectableTracks.length);
-
-    $(target).children('.check').toggleClass('checked');
 }
 //preview clicked left
 function previewClickLeft(target) {
     var elem = $(target).parent();
+
     if (prevIndex === elem.index()) {
         $('.preview-border').removeClass('show');
         $('#track-area').css('width', '');
         $('#track-area').removeClass('big');
         prevIndex = -1;
         setTimeout(() => {
-            $('#track-area .track-wrap-highlight').css('background-image', 'url(assets/tracks/thumbs/track-' + (elem.index() + 1) + '-thumb.png')
+            changePreviewBackground(elem.index());
         }, 250);
     } else {
         $('.preview-border').addClass('show');
@@ -165,14 +160,14 @@ function previewClickLeft(target) {
         $('#track-area').addClass('big');
         $('#track-area .track-wrap-highlight').addClass('show');
 
-        $('#track-area .track-wrap-highlight').css('background-image', 'url(' + tracks[prevIndex].img + ')');
+        changePreviewBackground(prevIndex);
+        toggleCheckWrap(prevIndex);
         //another dirty hack to adjust width of highlight wrap.
         imgdim();
     }
 }
 
 function toggleElementToSelectableTracksAndSave(index) {
-    console.log("persisting element with index", index);
     if (selectableTracks.includes(index)) {
         selectableTracks = selectableTracks.filter(function(o) {
             return o !== index;
@@ -181,11 +176,15 @@ function toggleElementToSelectableTracksAndSave(index) {
         selectableTracks.push(index);
     }
 
+    toggleCheckPreview(index);
+
+    //update selected text.
+    $('p.selected > span').text(selectableTracks.length);
+
     localStorage.setItem('trackChooser', JSON.stringify({
         tracks: tracks,
         choosableTrackIndices: selectableTracks
     }));
-    console.log(JSON.parse(localStorage.getItem('trackChooser')));
 }
 
 function imgdim() {
@@ -206,17 +205,53 @@ function imgdim() {
 
 }
 
+$('#track-area .track-wrap').click(function(el) {
+    var element = $(el.target);
+    if (!$('#track-area').hasClass('big')) return;
+
+    toggleElementToSelectableTracksAndSave(prevIndex);
+});
+
 $('.next').click(function() {
 
-    toggleVisibility();
-    //override right bar display
-    $('#right-bar').css('opacity', '0');
+    if (selectableTracks.length < 6) {
+        $('.choose-btn-wrapper').removeClass('show');
+        alert('You have selected too few tracks. Select at least 6 tracks from the overview page.');
+        return;
+    } else {
+        toggleVisibility();
+        //override right bar display
+        $('#right-bar').css('opacity', '0');
+        setTimeout(() => {
+            console.log('redirect auslosung');
+            window.location = 'chooser.html';
+        }, 500);
+    }
 
-    setTimeout(() => {
-        console.log('redirect auslosung');
-        window.location = 'chooser.html';
-    }, 500);
 });
+
+function changePreviewBackground(index) {
+    var isThumbs = !$('#track-area').hasClass('big');
+    var url = 'assets/tracks' + (isThumbs ? '/thumbs' : '') + '/track-' + (index + 1) + (isThumbs ? '-thumb' : '') + '.png';
+    $('#track-area .track-wrap-highlight').css('background-image', 'url(' + url + ')');
+}
+
+function toggleCheckPreview(index) {
+    //checkmark if index in selectedTracks
+    $('.preview-track-' + index).children('.check').toggleClass('checked', selectableTracks.includes(index));
+    //if track area has big && track wrap bg = index
+    if ($('#track-area').hasClass('big') &&
+        $('#track-area .track-wrap-highlight').css('background-image').indexOf('track-' + (index + 1)) !== -1) {
+
+        toggleCheckWrap(index);
+    } else if (!$('#track-area').hasClass('big')) {
+        toggleCheckWrap(index);
+    }
+}
+
+function toggleCheckWrap(index) {
+    $('#track-area .track-wrap-highlight .check').toggleClass('checked', selectableTracks.includes(index));
+}
 
 
 //initial visibility of page elements
@@ -225,7 +260,12 @@ setTimeout(toggleVisibility, 500);
 function toggleVisibility() {
     $('#all-tracks, #top-left-image, #top-right-image, #track-area, .slider-text, p').toggleClass('initial-display');
 }
-setTimeout(function() {
+
+var faded = false;
+
+function fadeOutText() {
+    if (faded) return;
     $('p.text').removeClass('initial-display').addClass('visible');
     $('p.text').fadeOut(500);
-}, 3500);
+    faded = true;
+};

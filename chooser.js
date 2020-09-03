@@ -26,7 +26,7 @@ console.log(availableTrackIndices);
 
 if (availableTracks.length < 6) {
     $('.choose-btn-wrapper').removeClass('show');
-    alert('You have selected to few tracks. Select at least 6 tracks from the overview page.');
+    alert('You have selected too few tracks. Select at least 6 tracks from the overview page.');
 
     setTimeout(function() {
         window.location = 'overview.html';

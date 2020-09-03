@@ -176,6 +176,7 @@
         }
 
         .check {
+            pointer-events: none;
             position: absolute;
             right: -15px;
             top: -3px;
@@ -185,6 +186,13 @@
             overflow: hidden;
             transform: rotate(45deg);
             visibility: hidden;
+        }
+
+        .check.big {
+            right: -24px;
+            top: -6px;
+            width: 75px;
+            height: 33px;
         }
 
         .check.checked {
@@ -198,6 +206,10 @@
             justify-content: center;
             margin-top: 3px;
             color: white;
+        }
+
+        .check.big .checkmark {
+            margin-top: 9px;
         }
 
 
@@ -234,6 +246,7 @@
         }
 
         p.selected {
+            width: 20%;
             right: 0;
             justify-content: flex-end;
             margin-right: 2%;
@@ -260,7 +273,11 @@
         <div class="track-area-wrapper">
             <div class="track-areas-display">
                 <div id="track-area" class="track-area">
-                    <div class="track-wrap track-wrap-highlight"></div>
+                    <div class="track-wrap track-wrap-highlight">
+                        <div class="check big">
+                            <div class="checkmark">L</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
