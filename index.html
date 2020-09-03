@@ -41,6 +41,21 @@
 
             text-align: center;
         }
+
+        .version {
+            color: lightgray;
+            font-family: arial;
+            position: absolute;
+            bottom: 0;
+            font-size: xx-small;
+            pointer-events: none;
+            margin-bottom: 10px;
+            opacity: 0;
+        }
+
+        #right-bar.show .version {
+            opacity: .5;
+        }
     </style>
 
 </head>
@@ -48,6 +63,7 @@
 <body>
     <div id="video-container">
         <div id="right-bar">
+            <div class="version">v1.0.2</div>
             <div class="next"></div>
         </div>
         <video id="logo" src="assets/videos/egtl-logo.mp4" loop="true"></video>
