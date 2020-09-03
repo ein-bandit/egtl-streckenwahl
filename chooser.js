@@ -125,6 +125,9 @@ $('.choose-btn-wrapper').click(function() {
     promise = new Promise(function(resolve) {
         $('#track-area-' + round + ' p').addClass('chosen');
         var steps = availableTrackIndices.length + randomAvailableIndex + 1;
+        if (availableTrackIndices.length < 6 && availableTrackIndices.length > 1) {
+            steps += 6;
+        }
         console.log("steps: ", steps);
         //-3 last three images should have max time
         highlightAddMS = (highlightThreshold - highlightStartDelay) / (steps - 3);
