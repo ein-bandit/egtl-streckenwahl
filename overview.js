@@ -223,7 +223,7 @@ $('#track-area .track-wrap').click(function(el) {
 
 $('.next').click(function() {
 
-    if (selectableTracks.length < 6) {
+    if (selectableTracks.length > 0 && selectableTracks.length < 6) {
         $('.choose-btn-wrapper').removeClass('show');
         alert('You have selected too few tracks. Select at least 6 tracks from the overview page.');
         return;
